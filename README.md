@@ -24,16 +24,6 @@ with the scores. This version sends only: the six WEI subscores, PC manufacturer
 + model (from WMI), your nickname, and a timestamp. No serials, no drive contents.
 The leaderboard lives on Cloudflare R2; see the website repo's `r2-worker.js`.
 
-## Build
-
-Open `Minipaso.sln` in Visual Studio 2010 and press F5. That's it.
-
-Before voting works, point the app at your worker in `src/Reporter.cs`:
-
-```csharp
-private const string WorkerUrl = "https://your-worker.workers.dev";
-```
-
 ## Layout
 
 - `src/Program.cs` — entry point
