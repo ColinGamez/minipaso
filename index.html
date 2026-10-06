@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Minipaso — Everyone's PC (tribute)</title>
+<meta name="description" content="Minipaso: a Windows tribute to GOGA's 2007 Minpaso Gadget. Measure your WEI, vote your scores, climb the rankings." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="hero">
+  <img src="assets/orb.png" alt="Start orb" width="72" height="72" class="orb" />
+  <div>
+    <p class="eyebrow">みんなのパソコン · EVERYONE'S PC</p>
+    <h1>Minipaso</h1>
+    <p>A Windows tribute to GOGA's legendary 2007 Minpaso Gadget for the Vista Sidebar. Same ritual: measure, vote, rank.</p>
+    <p>
+      <a class="btn" href="https://github.com/ColinGamez/minipaso/releases">Download the app</a>
+      <a class="btn ghost" href="https://github.com/ColinGamez/minipaso">Source (C# 4 · VS2010)</a>
+    </p>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li><b>測定 Measure</b> — the app runs <code>winsat formal</code> (or reads your latest official assessment from <code>C:\Windows\Performance\WinSAT\DataStore</code>).</li>
+      <li><b>投票 Vote</b> — pick a nickname and submit your six WEI subscores. Only scores + PC model + nickname leave your machine. The 2007 original also uploaded drive serials; this one doesn't.</li>
+      <li><b>ランキング Ranking</b> — the live table below, served from Cloudflare R2.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Live leaderboard</h2>
+    <p id="mp-status" class="muted">Loading…</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>#</th><th>Nickname</th><th>PC</th><th>Base</th><th>CPU</th><th>RAM</th><th>GPU</th><th>Gaming</th><th>Disk</th></tr></thead>
+      <tbody id="mp-board"></tbody>
+    </table></div>
+    <p class="muted small">Full board lives on <a href="https://ColinGamez.github.io/ColinGamez-website/minipaso/">colingamez.github.io</a>.</p>
+  </section>
+
+  <section class="card">
+    <h2>Build it yourself</h2>
+    <p>Opens and compiles in <b>Visual Studio 2010</b>, zero extensions — C# 4, .NET 4.0, WinForms:</p>
+    <pre>git clone https://github.com/ColinGamez/minipaso.git
+start Minipaso.sln   &amp; press F5</pre>
+    <p class="muted small">Then point <code>Reporter.cs</code> at your own worker if you self-host the leaderboard.</p>
+  </section>
+</main>
+
+<footer>
+  <p>Tribute to GOGA's Minpaso Gadget (2007–Win7 era). Scores by Microsoft WinSAT. Not affiliated with GOGA or Microsoft.</p>
+</footer>
+
+<script>
+(function () {
+  var board = document.getElementById('mp-board');
+  var status = document.getElementById('mp-status');
+  fetch('https://colingamez-r2-worker.colingames.workers.dev/api/minipaso/ranking')
+    .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function (rows) {
+      if (!rows || !rows.length) { status.textContent = 'No votes yet — be the first.'; return; }
+      status.textContent = rows.length + ' vote(s), best first.';
+      rows.slice(0, 10).forEach(function (row, i) {
+        var tr = document.createElement('tr');
+        [i + 1, row.nick, row.model, row.system, row.cpu, row.memory, row.graphics, row.gaming, row.disk].forEach(function (c, j) {
+          var td = document.createElement('td');
+          if (j === 0) td.className = 'rank';
+          td.textContent = (c === null || c === undefined || c === '') ? '—' : c;
+          tr.appendChild(td);
+        });
+        board.appendChild(tr);
+      });
+    })
+    .catch(function () { status.textContent = 'Leaderboard unreachable right now.'; });
+})();
+</script>
+</body>
+</html>
