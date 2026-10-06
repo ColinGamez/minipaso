@@ -1,5 +1,7 @@
 # Minipaso — みんなのパソコン tribute
 
+![Minipaso social preview](social-preview.png)
+
 **Project page: https://colingamez.github.io/minipaso/** (live leaderboard + downloads)
 
 A Windows-only successor to GOGA's legendary Japan-exclusive **Minpaso Gadget**
