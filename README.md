@@ -2,6 +2,8 @@
 
 ![Minipaso social preview](social-preview.png)
 
+![Live leaderboard](https://colingamez-r2-worker.colingames.workers.dev/api/og/minipaso)
+
 **Project page: https://colingamez.github.io/minipaso/** (live leaderboard + downloads)
 
 A Windows-only successor to GOGA's legendary Japan-exclusive **Minpaso Gadget**
